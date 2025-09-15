@@ -1,0 +1,87 @@
+# 本次学习环境为linux，centos7
+已提前配置固定ip、yum网络源
+使用的python版本：
+命令：yum -y update
+  yum -y install python
+[root@test1 day01]# python3 --version
+Python 3.6.8
+安装开发包：yum -y install python36-devel        # CentOS 7 仓库里 3.6 对应的名字
+
+[root@test1 day01]# pip3 --version
+pip 9.0.3 from /usr/lib/python3.6/site-packages (python 3.6)
+
+git仓库已使用自带的，
+
+用 black 做第一次代码格式化（养成习惯）
+pip3 install black
+black day01_sysinfo.py      # 会自动按 PEP8 缩进
+完成后显示：
+[root@test1 day01]# black day01_sysinfo.py 
+reformatted day01_sysinfo.py
+
+All done! ✨ 🍰 ✨
+1 file reformatted.
+
+如何上传到github
+目前系统自带git
+# 配置全局身份（已做过可跳过，输入github中的用户名和邮箱）
+git config --global user.name  "YourName"
+git config --global user.email "you@example.com"
+
+在 GitHub 新建空仓库（网页 30 秒）
+登录 https://github.com → 右上角 ➕ → New repository
+仓库名填 ops-python（任意），选 Public，不要 勾选 README 和 License → Create repository
+创建后保持页面别关，第 ④ 步需要里面的两行地址（HTTPS 或 SSH）。
+
+cd ~/ops-python               # 你的脚本目录
+git init                      # 变成仓库
+git add day01_sysinfo.py      # 添加文件
+git commit -m "feat: day01 hello-python & system info"
+
+# 把下面 https 地址换成你刚创建的仓库地址
+git remote add origin https://github.com/YourName/ops-python.git
+git branch -M main            # 把默认分支改名 main
+git push -u origin main       # 第一次推送加 -u
+
+弹出窗口输入 GitHub 账号 + 密码（或用 token/SSH key），看到
+Branch 'main' set up to track remote branch 'main'. 就成功了。
+如果未做过，就需要在github上配置token
+
+① 生成 Token（一次搞定）
+浏览器登录 GitHub → 右上角头像 → Settings
+最左边最下面 Developer settings → Personal access tokens → Tokens (classic) → Generate new token(classic)
+Note 随便写：ops-python
+过期时间选 90 天（或 No expiration）
+权限只勾 repo（全仓读写）→ 页面最下 Generate token
+立即复制那串 ghp_xxxxxxxx...（关掉页面就再也看不见）
+
+在linux上再次尝试上传
+git push -u origin main
+出现提示时
+Username：用户名
+Password：粘贴刚才的 ghp_xxx 字符串（粘贴后不显示，直接回车）
+看到 Branch 'main' set up to track... 就是成功！
+后续会显示：
+Enumerating objects: 5, done.  
+...  
+To https://github.com/Username/your——dersicont.git
+   abc1234..def5678  main -> main
+在网页上刷新就可以看到
+
+在这之后就可以使用三条命了完成：添加、提取、上传
+第 2 次上传示例（把 day02 脚本传上去）
+进入仓库目录：
+cd ~/ops-python          # 你的本地仓库路径
+添加（add）
+git add day02_nginx_line_count.py   # 单个文件
+# 或者一次性添加所有新文件：
+git add .
+
+提取（commit）
+git commit -m "feat: day02 count nginx log lines"
+上传（push）
+git push                 # 第一次已经 -u，现在直接 push
+常见快捷组合（记忆版）
+git add . && git commit -m "feat: dayxx xxxxx" && git push
+一条命令完成「添提推」，第二次及以后都用它。
+
