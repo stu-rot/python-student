@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import platform, os, socket, datetime, sys, json
 import requests, psutil
-feishu_webhook = "https://open.feishu.cn/open-apis/bot/v2/hook/353f1fee-d789-46c8-bb3d-6b69a20127ee"
+feishu_webhook = "https://open.feishu.cn/输入你获得的webhook"
 
 usage = psutil.disk_usage('/')
 total_GB = usage.total / (1024**3)
