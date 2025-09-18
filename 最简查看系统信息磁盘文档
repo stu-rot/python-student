@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+import platform, os, socket, datetime, sys, json
+import requests, psutil
+feishu_webhook = "https://open.feishu.cn/open-apis/bot/v2/hook/353f1fee-d789-46c8-bb3d-6b69a20127ee"
+
+usage = psutil.disk_usage('/')
+total_GB = usage.total / (1024**3)
+used_GB = usage.used / (1024**3)
+free_GB = usage.free / (1024**3)
+
+def server_ip():
+    # 获取本级ipv4，无网卡时返回127.0.0.1
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(('8.8.8.8',80))
+            return s.getsockname()[0]
+    except OSError:
+        return '127.0.0.1'
+
+
+def info():
+    return {
+        "time": datetime.datetime.now().strftime('%F %T'),
+        "host_ip": server_ip(),
+        "system": platform.system(),
+        "release": platform.release(),
+        "cpu": os.cpu_count(),
+        "hostname": socket.gethostname(),
+        "disk_total": f"{total_GB:7.2f}GB",
+        "disk_used": f"{used_GB:7.2f}GB",
+        "disk_free": f"{free_GB:7.2f}GB"
+    }
+
+def send_feishu(d):
+    payload = {
+        "msg_type": "text",
+        "content": {
+            "text": f"系统信息：\n主机：{d['hostname']}\n系统：{d['system']} {d['release']}\n主机ip:{d['host_ip']}\n"
+                    f"CPU：{d['cpu']}\n磁盘总容量:{d['disk_total']}\n磁盘已使用:{d['disk_used']}\n磁盘剩余:{d['disk_free']}\n时间：{d['time']}"
+        }
+    }
+    r = requests.post(feishu_webhook, json=payload)
+    print("✅ 已推送" if r.ok else "❌ 失败", r.text)
+
+if __name__ == "__main__":
+    send_feishu(info())
